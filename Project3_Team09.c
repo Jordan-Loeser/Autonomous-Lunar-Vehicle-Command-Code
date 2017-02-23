@@ -29,8 +29,6 @@
  */
 
 task main() {
-    /* Get an input, play a sound, and wait 1 second */ int input;
-    input = SensorValue[1];
-        PlaySound(soundBeepBeep);
-        Sleep(1000);
+    playSound(soundBeepBeep);
+    sleep(1000);
 }
