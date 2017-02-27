@@ -32,9 +32,20 @@
 
 task main() {
     // Clean Slate
-    sensorValue[leftEncoder] = 0;
+    SensorValue[motorA] = 0;
 
-    // Correct Offset Angle
+    /*
+    //Turn Protoype
+    motor[motorA] = -50;
+    motor[motorB] = 0;
+
+    sleep(1000);
+
+    motor[motorA] = 0;
+    motor[motorB] = 0;
+    */
+
+    // TODO: Correct Offset Angle
     // Move Forward
-    moveDistanceCm(100, 50);
+   	moveDistanceCm(10, 20);
 }

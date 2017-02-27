@@ -1,11 +1,12 @@
 // Define Dimentions (cm)
+#define PI 4 * atan(1.0)
 #define diameter 8
-#define circumference (diameter * 3.14159)
+#define circumference (diameter * PI)
 
 /*
 Move forwards a set distance in mm.
 */
-task moveDistanceMm(int distanceMm, int power) {
+void moveDistanceMm(int distanceMm, int power) {
     // Initialize Variables
     nMotorEncoder[motorA] = 0;
     int ticksPerMm = 360 / circumference;
@@ -21,11 +22,13 @@ task moveDistanceMm(int distanceMm, int power) {
     // Stop Motors
     motor[motorA] = power;
     motor[motorB] = power;
+    return;
 }
 
 /*
 Move forwards a set distance in cm.
 */
-task moveDistanceCm(int distanceCm, int power) {
-    moveDistanceCm(distance * 10, power);
+void moveDistanceCm(int distanceCm, int power) {
+    moveDistanceMm(distanceCm * 10, power);
+    return;
 }
