@@ -27,3 +27,14 @@
  *
  * Commands Autonomous Lunar Vehicle (ALV).
  */
+
+#include "BasicMovement.h"
+
+task main() {
+    // Clean Slate
+    sensorValue[leftEncoder] = 0;
+
+    // Correct Offset Angle
+    // Move Forward
+    moveDistanceCm(100, 50);
+}
