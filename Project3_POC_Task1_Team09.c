@@ -1,5 +1,5 @@
-/* Project 3 Control Code
- * File:    Project3_Team09.c
+/* Project 3 POC Task1 Code
+ * File:    Project3_POC_Task1_Team09.c
  * Date:    22 January 2017
  * By:      Klaire Fosnaugh
  *          kfosnau
@@ -27,8 +27,3 @@
  *
  * Commands Autonomous Lunar Vehicle (ALV).
  */
-
-task main() {
-    playSound(soundBeepBeep);
-    sleep(1000);
-}
