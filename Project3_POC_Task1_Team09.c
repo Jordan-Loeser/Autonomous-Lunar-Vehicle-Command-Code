@@ -30,22 +30,16 @@
 
 #include "BasicMovement.h"
 
+
 task main() {
     // Clean Slate
-    SensorValue[motorA] = 0;
+    nMotorEncoder[motorA] = 0;
+    nMotorEncoder[motorB] = 0;
 
-    /*
-    //Turn Protoype
-    motor[motorA] = -50;
-    motor[motorB] = 0;
+    turnLeftDeg(40, 20);
 
-    sleep(1000);
-
-    motor[motorA] = 0;
-    motor[motorB] = 0;
-    */
 
     // TODO: Correct Offset Angle
     // Move Forward
-   	moveDistanceCm(10, 20);
+   	//moveDistanceCm(10, 20);
 }
