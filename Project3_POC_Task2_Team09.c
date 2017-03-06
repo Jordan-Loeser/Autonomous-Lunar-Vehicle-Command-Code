@@ -36,6 +36,12 @@ task main() {
     nMotorEncoder[motorA] = 0;
     nMotorEncoder[motorB] = 0;
 
+    wait1Msec(1000); // RobotC Quirk
+
+    // Send Initial LSTS Request
+    ClearMessage();
+    sendMessage(100); // Height of Marker in mm
+
     // Define Variables
     Position currentPosition;
     currentPosition.orientation = 90; // East
@@ -49,12 +55,12 @@ task main() {
     // Enter Starting Position
 
     // TODO: Enable User Input
-    writeDebugStream("\nEnter initial X coordinate: ");
+    /*writeDebugStream("\nEnter initial X coordinate: ");
     scanf("%f", &currentPosition.x);
 
     writeDebugStream("%s", "\nEnter initial Y coordinate: ");
     scanf("%f", &currentPosition.y);
-
+    */
 
     // Move to suitable y Position (40)
     moveVerticallyTo(40, currentPosition, 20);
