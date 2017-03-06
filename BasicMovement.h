@@ -13,6 +13,14 @@ typedef struct Position_struct{
 } Position;
 
 /*
+Display current position coordinates.
+*/
+void displayPosition(Position currentPosition){
+	writeDebugStream("\n(%d, %d)\n", currentPosition.x, currentPosition.y);
+	return;
+}
+
+/*
 Move forwards a set distance in mm.
 */
 void moveDistanceMm(int distanceMm, int power) {
@@ -103,114 +111,118 @@ int turnRightDeg(int degrees, int power) {
 /*
 Face Compass Direction
 */
-void faceNorth(Position currentPosition, int power){
+void faceNorth(Position &currentPosition, int power){
 
     int initialOrientation = currentPosition.orientation;
 
     // Readjust angle to vertical
     if((initialOrientation % 360) < 180){
-        turnLeftDeg((initialAngle % 360), power);
+        turnLeftDeg((initialOrientation % 360), power);
     }
     else {
-        turnRightDeg(360 - (initialAngle % 360), power);
+        turnRightDeg(360 - (initialOrientation % 360), power);
     }
 
     currentPosition.orientation = 0;
 
-    return currentPosition; // Degrees
+    return; // Degrees
 }
-void faceSouth(Position currentPosition, int power){
+void faceSouth(Position &currentPosition, int power){
 
     int initialOrientation = currentPosition.orientation;
 
     // Readjust angle to vertical
     if((initialOrientation % 360) < 180){
-        turnRightDeg(180 - (initialAngle % 360), power);
+        turnRightDeg(180 - (initialOrientation % 360), power);
     }
     else {
-        turnLeftDeg((initialAngle % 360) - 180, power);
+        turnLeftDeg((initialOrientation % 360) - 180, power);
     }
 
     currentPosition.orientation = 180;
 
-    return currentPosition; // Degrees
+    return; // Degrees
 }
-void faceEast(Position currentPosition, int power){
+void faceEast(Position &currentPosition, int power){
 
     int initialOrientation = currentPosition.orientation;
 
     // Readjust angle to vertical
     if((initialOrientation % 360) < 90){
-        turnRightDeg(90 - (initialAngle % 360), power);
+        turnRightDeg(90 - (initialOrientation % 360), power);
     }
     else {
-        turnLeftDeg((initialAngle % 360) - 90, power);
+        turnLeftDeg((initialOrientation % 360) - 90, power);
     }
 
     currentPosition.orientation = 90;
 
-    return currentPosition; // Degrees
+    return; // Degrees
 }
-void faceWest(Position currentPosition, int power){
+void faceWest(Position &currentPosition, int power){
 
     int initialOrientation = currentPosition.orientation;
 
     // Readjust angle to vertical
     if((initialOrientation % 360) < 270){
-        turnRightDeg(270 - (initialAngle % 360), power);
+        turnRightDeg(270 - (initialOrientation % 360), power);
     }
     else {
-        turnLeftDeg((initialAngle % 360) - 270, power);
+        turnLeftDeg((initialOrientation % 360) - 270, power);
     }
 
     currentPosition.orientation = 270;
 
-    return currentPosition; // Degrees
+    return; // Degrees
 }
 
 
 /*
 Move Vertically To a specific Y coord
 */
-void moveVerticallyTo(int goalYPos, Position currentPosition, int power){
+void moveVerticallyTo(int goalYPos, Position &currentPosition, int power){
 
     if(currentPosition.y > goalYPos) { // ALV must move down
-        currentPosition = faceSouth(currentPosition, power);
+        faceSouth(currentPosition, power);
         while(currentPosition.y > goalYPos){
             moveDistanceCm(1, power);
             currentPosition.y -= 1;
+            displayPosition(currentPosition);
         }
     }
     else { // ALV must move up
-        currentPosition = faceNorth(currentPosition, power);
+        faceNorth(currentPosition, power);
         while(currentPosition.y < goalYPos){
             moveDistanceCm(1, power);
             currentPosition.y += 1;
+            displayPosition(currentPosition);
         }
     }
 
-    return currentPosition;
+    return;
 }
 
 /*
 Move Vertically To a specific Y coord
 */
-void moveHorizontallyTo(int goalXPos, Position currentPosition, int power){
+void moveHorizontallyTo(int goalXPos, Position &currentPosition, int power){
 
     if(currentPosition.x > goalXPos) { // ALV must move west
-        currentPosition = faceWest(currentPosition, power);
-        while(currentPosition.x > goalYPos){
+        faceWest(currentPosition, power);
+        while(currentPosition.x > goalXPos){
             moveDistanceCm(1, power);
             currentPosition.x -= 1;
+            displayPosition(currentPosition);
         }
     }
     else { // ALV must move east
-        currentPosition = faceEast(currentPosition, power);
+        faceEast(currentPosition, power);
         while(currentPosition.x < goalXPos){
             moveDistanceCm(1, power);
             currentPosition.x += 1;
+            displayPosition(currentPosition);
         }
     }
 
-    return currentPosition;
+    return;
 }

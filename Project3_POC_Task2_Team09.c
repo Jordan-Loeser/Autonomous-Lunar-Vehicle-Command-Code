@@ -42,20 +42,27 @@ task main() {
     int goalX = 135; // cm
     int goalY = 75;
 
+    currentPosition.x = 0;
+    currentPosition.y = 0;
+    currentPosition.orientation = 90;
+
     // Enter Starting Position
-    writeDebugScreen("\nEnter initial X coordinate: ");
+
+    // TODO: Enable User Input
+    writeDebugStream("\nEnter initial X coordinate: ");
     scanf("%f", &currentPosition.x);
 
-    writeDebugScreen("\nEnter initial Y coordinate: ");
+    writeDebugStream("%s", "\nEnter initial Y coordinate: ");
     scanf("%f", &currentPosition.y);
 
+
     // Move to suitable y Position (40)
-    currentPosition = moveVerticallyTo(40, currentPosition, 20);
+    moveVerticallyTo(40, currentPosition, 20);
 
     // Move to final x Position
-    currentPosition = moveHorizontallyTo(goalX, currentPosition, 20);
+    moveHorizontallyTo(goalX, currentPosition, 20);
 
     // Move to final y position
-    currentPosition = moveVerticallyTo(goalYPos, currentPosition, 20);
+    moveVerticallyTo(goalY, currentPosition, 20);
 
 }
