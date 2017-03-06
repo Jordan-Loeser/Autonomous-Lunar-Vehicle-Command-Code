@@ -30,11 +30,15 @@
 
 #include "BasicMovement.h"
 
-
 task main() {
     // Clean Slate
     nMotorEncoder[motorA] = 0;
     nMotorEncoder[motorB] = 0;
+
+    // Define Variables
+    Position currentPosition;
+    int goalX = 135; // cm
+    int goalY = 75;
 
     wait1Msec(1000); // RobotC Quirk
 
@@ -42,25 +46,11 @@ task main() {
     ClearMessage();
     sendMessage(100); // Height of Marker in mm
 
-    // Define Variables
-    Position currentPosition;
-    currentPosition.orientation = 90; // East
-    int goalX = 135; // cm
-    int goalY = 75;
-
-    currentPosition.x = 0;
-    currentPosition.y = 0;
-    currentPosition.orientation = 90;
-
     // Enter Starting Position
-
-    // TODO: Enable User Input
-    /*writeDebugStream("\nEnter initial X coordinate: ");
-    scanf("%f", &currentPosition.x);
-
-    writeDebugStream("%s", "\nEnter initial Y coordinate: ");
-    scanf("%f", &currentPosition.y);
-    */
+    currentPosition.x = messageParm[1];
+    currentPosition.y = messageParm[2];
+    currentPosition.orientation = 90;
+    ClearMessage();
 
     // Move to suitable y Position (40)
     moveVerticallyTo(40, currentPosition, 20);
