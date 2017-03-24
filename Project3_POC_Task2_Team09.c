@@ -44,12 +44,25 @@ task main() {
 
     // Send Initial LSTS Request
     ClearMessage();
-    sendMessage(100); // Height of Marker in mm
+    sendMessage(10); // Height of Marker in mm
+    writeDebugStream("\nInitial LSTS Request: Sent\n");
 
-    // Enter Starting Position
-    currentPosition.x = messageParm[1];
-    currentPosition.y = messageParm[2];
-    currentPosition.orientation = 90;
+    // See if message has been returned
+    if(bQueuedMsgAvailable()){
+        int error = messageParm[0];
+        if(error == 1){
+            writeDebugStream("\nNo error.\n");
+            // Initialize Starting Position
+            currentPosition.x = messageParm[1];
+            currentPosition.y = messageParm[2];
+            currentPosition.orientation = 90;
+            ClearMessage();
+        }
+        else {
+            writeDebugStream("\nError detected.\n");
+        }
+    }
+
     ClearMessage();
 
     // Move to suitable y Position (40)
