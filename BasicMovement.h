@@ -2,6 +2,7 @@
 #define PI 4 * atan(1.0)
 #define diameter 8
 #define circumference (diameter * PI)
+#define textureGainFactor 1.1
 
 /*
 Struct for robot's current position.
@@ -16,7 +17,7 @@ typedef struct Position_struct{
 Display current position coordinates.
 */
 void displayPosition(Position currentPosition){
-	writeDebugStream("\n(%d, %d)\n", currentPosition.x, currentPosition.y);
+	nxtDisplayCenteredTextLine(1, "\n(%d, %d)\n", currentPosition.x, currentPosition.y);
 	return;
 }
 
@@ -61,7 +62,7 @@ int turnLeftDeg(int degrees, int power) {
     nMotorEncoder[motorB] = 0;
 
     // Determine Tickgoal
-    float ticksPerDeg = 1.758;
+    float ticksPerDeg = 1.758 * textureGainFactor;
     int tickGoal = (ticksPerDeg * degrees);
     //printf("%d", tickGoal);
 
@@ -88,7 +89,7 @@ int turnRightDeg(int degrees, int power) {
     nMotorEncoder[motorB] = 0;
 
     // Determine Tickgoal
-    float ticksPerDeg = 1.758;
+    float ticksPerDeg = 1.758 * textureGainFactor;
     int tickGoal = (ticksPerDeg * degrees);
 
     // Run Motors

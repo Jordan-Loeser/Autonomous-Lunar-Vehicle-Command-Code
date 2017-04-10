@@ -28,7 +28,11 @@
  * Commands Autonomous Lunar Vehicle (ALV).
  */
 
+#include "BasicMovement.h"
+
 task main() {
-    playSound(soundBeepBeep);
-    sleep(1000);
+	 turnLeftDeg(90, 20);
+   // playSound(soundBeepBeep);
+   //sleep(1000);
+
 }

@@ -1,6 +1,6 @@
-/* Project 3 POC Task2 Code
- * File:    Project3_POC_Task2_Team09.c
- * Date:    22 January 2017
+/* Project 3 POC Task4 Code
+ * File:    Project3_POC_Task4_Team09.c
+ * Date:    07 April 2017
  * By:      Klaire Fosnaugh
  *          kfosnau
  *          Bailey Hayes
@@ -35,23 +35,17 @@ task main() {
     nMotorEncoder[motorA] = 0;
     nMotorEncoder[motorB] = 0;
 
-    // Define Variables
-    Position currentPosition;
-    int goalX = 135; // cm
-    int goalY = 75;
+    // Move to search area
+    moveDistanceCm(50, 20);
 
-   	// Initialize Starting Position
-    currentPosition.x = 0;
-    currentPosition.y = 0;
-    currentPosition.orientation = 90;
-    ClearMessage();
+    // Start searching
+    magetValue = sensorRaw[A] / 1023;
+    while(magnetValue < .75){
+    	moveDistanceMm(1);
+    	magetValue = sensorRaw[A] / 1023;
+    }
 
-    // Move to suitable y Position (40)
-   	moveVerticallyTo(40, currentPosition, 20);
-
-    // Move to final x Position
-    moveHorizontallyTo(goalX, currentPosition, 20);
-
-   	// Move to final y position
-    moveVerticallyTo(goalY, currentPosition, 20);
+    // Beacon was found
+    playSound(soundBeepBeepBeep);
+   	sleep(1000);
 }
