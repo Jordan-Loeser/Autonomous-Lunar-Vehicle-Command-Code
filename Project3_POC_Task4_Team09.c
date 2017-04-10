@@ -39,13 +39,16 @@ task main() {
     moveDistanceCm(50, 20);
 
     // Start searching
-    magetValue = sensorRaw[A] / 1023;
+    magetValue = sensorRaw[S4] / 1023;
     while(magnetValue < .75){
     	moveDistanceMm(1);
-    	magetValue = sensorRaw[A] / 1023;
+    	magetValue = sensorRaw[S4] / 1023;
     }
 
     // Beacon was found
-    playSound(soundBeepBeepBeep);
+    for(int i = 0; i < 3; i++){
+        playSound(soundBlip);
+    }
+    
    	sleep(1000);
 }

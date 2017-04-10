@@ -39,12 +39,13 @@ task main() {
     Position currentPosition;
     int goalX = 135; // cm
     int goalY = 75;
+    int startX = 0;
+    int startY = 0;
 
    	// Initialize Starting Position
-    currentPosition.x = 0;
-    currentPosition.y = 0;
+    currentPosition.x = startX;
+    currentPosition.y = startY;
     currentPosition.orientation = 90;
-    ClearMessage();
 
     // Move to suitable y Position (40)
    	moveVerticallyTo(40, currentPosition, 20);
@@ -54,4 +55,19 @@ task main() {
 
    	// Move to final y position
     moveVerticallyTo(goalY, currentPosition, 20);
+
+    // At Goal - Beep Thrice
+    for(int i = 0; i < 3; i++){
+        playSound(soundBlip);
+    }
+
+    // Move to suitable y Position (40)
+   	moveVerticallyTo(40, currentPosition, 20);
+
+    // Move to home x Position
+    moveHorizontallyTo(startX, currentPosition, 20);
+
+   	// Move to home y position
+    moveVerticallyTo(startY, currentPosition, 20);
+
 }

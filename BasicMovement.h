@@ -2,7 +2,8 @@
 #define PI 4 * atan(1.0)
 #define diameter 8
 #define circumference (diameter * PI)
-#define textureGainFactor 1.1
+#define RotationalTextureGainFactor 1.1
+#define LinearTextureGainFactor 1.1
 
 /*
 Struct for robot's current position.
@@ -62,7 +63,7 @@ int turnLeftDeg(int degrees, int power) {
     nMotorEncoder[motorB] = 0;
 
     // Determine Tickgoal
-    float ticksPerDeg = 1.758 * textureGainFactor;
+    float ticksPerDeg = 1.758 * RotationalTextureGainFactor;
     int tickGoal = (ticksPerDeg * degrees);
     //printf("%d", tickGoal);
 
@@ -89,7 +90,7 @@ int turnRightDeg(int degrees, int power) {
     nMotorEncoder[motorB] = 0;
 
     // Determine Tickgoal
-    float ticksPerDeg = 1.758 * textureGainFactor;
+    float ticksPerDeg = 1.758 * RotationalTextureGainFactor;
     int tickGoal = (ticksPerDeg * degrees);
 
     // Run Motors
