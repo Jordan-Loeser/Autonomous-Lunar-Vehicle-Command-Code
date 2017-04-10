@@ -2,8 +2,9 @@
 #define PI 4 * atan(1.0)
 #define diameter 8
 #define circumference (diameter * PI)
-#define RotationalTextureGainFactor 1.1
+#define RotationalTextureGainFactor 1.15
 #define LinearTextureGainFactor 1.1
+#define transitionDelay 50
 
 /*
 Struct for robot's current position.
@@ -26,6 +27,7 @@ void displayPosition(Position currentPosition){
 Move forwards a set distance in mm.
 */
 void moveDistanceMm(int distanceMm, int power) {
+		//wait10Msec(transitionDelay)
     // Initialize Variables
     nMotorEncoder[motorA] = 0;
     nMotorEncoder[motorB] = 0;
@@ -40,8 +42,8 @@ void moveDistanceMm(int distanceMm, int power) {
     }
 
     // Stop Motors
-    motor[motorA] = power;
-    motor[motorB] = power;
+    motor[motorA] = 0;
+    motor[motorB] = 0;
     return;
 }
 
@@ -57,6 +59,7 @@ void moveDistanceCm(int distanceCm, int power) {
 Rotate a specific amount of degrees.
 */
 int turnLeftDeg(int degrees, int power) {
+		//wait10Msec(transitionDelay)
 
     // Initialize Variables
     nMotorEncoder[motorA] = 0;
@@ -84,6 +87,7 @@ int turnLeftDeg(int degrees, int power) {
     return -1 * degrees;
 }
 int turnRightDeg(int degrees, int power) {
+		//wait10Msec(transitionDelay)
 
     // Initialize Variables
     nMotorEncoder[motorA] = 0;
@@ -186,6 +190,7 @@ void moveVerticallyTo(int goalYPos, Position &currentPosition, int power){
 
     if(currentPosition.y > goalYPos) { // ALV must move down
         faceSouth(currentPosition, power);
+        wait10Msec(transitionDelay);
         while(currentPosition.y > goalYPos){
             moveDistanceCm(1, power);
             currentPosition.y -= 1;
@@ -194,6 +199,7 @@ void moveVerticallyTo(int goalYPos, Position &currentPosition, int power){
     }
     else { // ALV must move up
         faceNorth(currentPosition, power);
+        wait10Msec(transitionDelay);
         while(currentPosition.y < goalYPos){
             moveDistanceCm(1, power);
             currentPosition.y += 1;
@@ -211,6 +217,7 @@ void moveHorizontallyTo(int goalXPos, Position &currentPosition, int power){
 
     if(currentPosition.x > goalXPos) { // ALV must move west
         faceWest(currentPosition, power);
+        wait10Msec(transitionDelay);
         while(currentPosition.x > goalXPos){
             moveDistanceCm(1, power);
             currentPosition.x -= 1;
@@ -219,6 +226,7 @@ void moveHorizontallyTo(int goalXPos, Position &currentPosition, int power){
     }
     else { // ALV must move east
         faceEast(currentPosition, power);
+        wait10Msec(transitionDelay);
         while(currentPosition.x < goalXPos){
             moveDistanceCm(1, power);
             currentPosition.x += 1;

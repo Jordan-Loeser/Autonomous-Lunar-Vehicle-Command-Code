@@ -39,35 +39,52 @@ task main() {
     Position currentPosition;
     int goalX = 135; // cm
     int goalY = 75;
-    int startX = 0;
-    int startY = 0;
+    int startX = 20;
+    int startY = 50;
 
    	// Initialize Starting Position
     currentPosition.x = startX;
     currentPosition.y = startY;
     currentPosition.orientation = 90;
 
-    // Move to suitable y Position (40)
-   	moveVerticallyTo(40, currentPosition, 20);
+    // Move to suitable y Position (30)
+    if(startY > 30){
+   		moveVerticallyTo(30, currentPosition, 25);
+   	}
+   	wait10Msec(transitionDelay);
 
     // Move to final x Position
-    moveHorizontallyTo(goalX, currentPosition, 20);
+    moveHorizontallyTo(goalX, currentPosition, 25);
+    wait10Msec(transitionDelay);
 
    	// Move to final y position
-    moveVerticallyTo(goalY, currentPosition, 20);
+    moveVerticallyTo(goalY, currentPosition, 25);
+    wait10Msec(transitionDelay);
 
     // At Goal - Beep Thrice
+    motor[motorA] = 0; // Left
+    motor[motorB] = 0;
     for(int i = 0; i < 3; i++){
-        playSound(soundBlip);
+    	wait10Msec(100);
+      playSound(soundBeepBeep);
     }
+    wait10Msec(100);
 
-    // Move to suitable y Position (40)
-   	moveVerticallyTo(40, currentPosition, 20);
+    // Move to suitable y Position (30)
+    if(startY > 30){
+   		moveVerticallyTo(30, currentPosition, 25);
+   	}
+   	else {
+   		moveVerticallyTo(startY, currentPosition, 25);
+   	}
+   	wait10Msec(transitionDelay);
 
     // Move to home x Position
-    moveHorizontallyTo(startX, currentPosition, 20);
+    moveHorizontallyTo(startX, currentPosition, 25);
+    wait10Msec(transitionDelay);
 
    	// Move to home y position
-    moveVerticallyTo(startY, currentPosition, 20);
+    moveVerticallyTo(startY, currentPosition, 25);
+    wait10Msec(transitionDelay);
 
 }

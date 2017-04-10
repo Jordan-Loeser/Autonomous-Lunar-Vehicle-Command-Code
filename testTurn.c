@@ -2,7 +2,7 @@
  * File:    Project3_Team09.c
  * Date:    22 January 2017
  * By:      Klaire Fosnaugh
- *          kfosnau?
+ *          kfosnau:
  *          Bailey Hayes
  *          hayes121
  *          Jordan Loeser
@@ -32,7 +32,4 @@
 
 task main() {
 	 turnLeftDeg(90, 20);
-   // playSound(soundBeepBeep);
-   //sleep(1000);
-
 }
