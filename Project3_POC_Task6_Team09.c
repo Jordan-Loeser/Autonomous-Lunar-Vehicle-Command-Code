@@ -31,64 +31,27 @@
 #include "BasicMovement.h"
 
 task main() {
-    // Clean Slate
-    nMotorEncoder[motorA] = 0;
-    nMotorEncoder[motorB] = 0;
-
-    // Define Variables
-    Position currentPosition;
-    int goalX = 135; // cm
-    int goalY = 75;
 
     wait1Msec(1000); // RobotC Quirk
 
-    nxtDisplayCenteredTextLine(1, "%s", "WE OUT HERE");
+    nxtDisplayCenteredTextLine(1, "%s", "Initialized...");
 
     // Send Initial LSTS Request
     ClearMessage();
     sendMessage(10); // Height of Marker in mm
+    nxtDisplayCenteredTextLine(1, "%s", "Message Sent...");
     wait1Msec(1000);
-    //writeDebugStream("\nInitial LSTS Request: Sent\n");
 
-    // See if message has been returned
-    /*
-    int firstMessage = 0;
-    while(!firstMessage){
-    	if(bQueuedMsgAvailable()){
-    		firstMessage = 1;
-    		nxtDisplayClearTextLine(5);
-    		nxtDisplayCenteredTextLine(5, "%s", "Message recieved!");
-    	}
-    	else {
-    		nxtDisplayClearTextLine(5);
-    		//nxtDisplayCenteredTextLine(5, "%s", "Well we'll just wait...\n");
-    	}
-    }
-    */
-
-    // We got a message
-    int error = messageParm[0];
+    // Interpret Message
+    word error = messageParm[0];
     if(error == 1){
         nxtDisplayCenteredTextLine(7, "%s", "No error.");
-        // Initialize Starting Position
-        currentPosition.x = messageParm[1];
-        currentPosition.y = messageParm[2];
-        currentPosition.orientation = 90;
-        ClearMessage();
-
-        // Move to suitable y Position (40)
-   			moveVerticallyTo(40, currentPosition, 20);
-
-    		// Move to final x Position
-    		moveHorizontallyTo(goalX, currentPosition, 20);
-
-   	 		// Move to final y position
-    		moveVerticallyTo(goalY, currentPosition, 20);
     }
     else {
         nxtDisplayCenteredTextLine(4, "%s", "error");
     }
 
-
-
+    wait10Msec(500);
+    ClearMessage();
+    eraseDisplay();
 }

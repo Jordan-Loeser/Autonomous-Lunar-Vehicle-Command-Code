@@ -27,7 +27,6 @@ void displayPosition(Position currentPosition){
 Move forwards a set distance in mm.
 */
 void moveDistanceMm(int distanceMm, int power) {
-		//wait10Msec(transitionDelay)
     // Initialize Variables
     nMotorEncoder[motorA] = 0;
     nMotorEncoder[motorB] = 0;
