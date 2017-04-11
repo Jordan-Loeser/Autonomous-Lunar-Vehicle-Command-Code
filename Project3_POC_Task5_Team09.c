@@ -1,6 +1,6 @@
-/* Project 3 POC Task4 Code
- * File:    Project3_POC_Task4_Team09.c
- * Date:    07 April 2017
+/* Project 3 POC Task1 Code
+ * File:    Project3_POC_Task1_Team09.c
+ * Date:    22 January 2017
  * By:      Klaire Fosnaugh
  *          kfosnau
  *          Bailey Hayes
@@ -30,37 +30,33 @@
 
 #include "BasicMovement.h"
 
+
 task main() {
     // Clean Slate
     nMotorEncoder[motorA] = 0;
     nMotorEncoder[motorB] = 0;
-    int magnetCalibrationValue = 473; // Default
+    nMotorEncoder[motorC] = 0;
 
-    // Move to search area
-    //moveDistanceCm(50, 20);
+    // Move Forward
+    /*
+   	moveDistanceCm(45, 20);
+   	turnRightDeg(90, 20);
+   	moveDistanceCm(35, 20);
+   	turnLeftDeg(90, 20);
+   	moveDistanceCm(30, 20);
+   	turnRightDeg(180, 20);
+   	*/
 
-    // Start searching
-    magnetCalibrationValue = SensorRaw[S4];
-    int magnetValue = magnetCalibrationValue;
-    int diff = magnetCalibrationValue - magnetValue;
-    while(abs(diff) < 10){
-    	moveDistanceCm(1, 20);
-    	magnetValue = SensorRaw[S4];
-    	diff = magnetCalibrationValue - magnetValue;
-    	nxtDisplayCenteredTextLine(1, "MAGNET: %d", magnetValue);
-    	nxtDisplayCenteredTextLine(3, "DIFF: %d", diff);
-    }
+   	// Drop Off
+   	dropOffBin();
+   	wait10Msec(100);
+   	dropOffBin();
+   	wait10Msec(100);
+   	dropOffBin();
+   	wait10Msec(100);
+   	//dropOffBin();
 
-    // Go over Beacon
-    moveDistanceCm(5, 20);
+   	// Move Away
+   	//moveDistanceCm(30, 20);
 
-    // Beacon was found
-    for(int i = 0; i < 3; i++){
-        playSound(soundDownwardTones);
-        wait10Msec(100);
-    }
-
-
-
-   	sleep(1000);
 }

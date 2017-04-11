@@ -236,3 +236,27 @@ void moveHorizontallyTo(int goalXPos, Position &currentPosition, int power){
 
     return;
 }
+
+/*
+Drop off Bin
+*/
+void dropOffBin() {
+
+    // Initialize Variables
+    nMotorEncoder[motorA] = 0;
+    nMotorEncoder[motorB] = 0;
+    nMotorEncoder[motorC] = 0;
+    int treadDiameterMm = 30;
+    int ticksPerMm = 360 / (treadDiameterMm * PI);
+    int binWidthMm = 36;
+    int tickGoal = (ticksPerMm * binWidthMm);
+
+    // Move
+    while(abs(nMotorEncoder[motorC]) < tickGoal){
+        motor[motorC] = 15;
+    }
+
+    // Stop Motors
+    motor[motorC] = 0;
+    return;
+}
