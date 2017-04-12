@@ -44,6 +44,8 @@ task main() {
     int magnetValue = magnetCalibrationValue;
     int diff = magnetCalibrationValue - magnetValue;
     while(abs(diff) < 10){
+    	motor[motorA] = 10;
+    	motor[motorB] = 10;
     	magnetValue = SensorRaw[S4];
     	diff = magnetCalibrationValue - magnetValue;
     	nxtDisplayCenteredTextLine(1, "MAGNET: %d", magnetValue);

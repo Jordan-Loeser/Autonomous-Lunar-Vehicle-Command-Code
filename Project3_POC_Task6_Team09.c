@@ -32,46 +32,58 @@
 
 task main() {
 
-    wait1Msec(1000); // RobotC Quirk
+    wait1Msec(3000); // RobotC Quirk
 
     nxtDisplayCenteredTextLine(1, "%s", "Initialized...");
 
     // Send Initial LSTS Request
-    ClearMessage();
+    //ClearMessage();
     sendMessage(10); // Height of Marker in mm
     nxtDisplayCenteredTextLine(1, "%s", "Message Sent...");
-    wait1Msec(1000);
+    wait1Msec(5000);
+    bool waiting = true;
+    while(waiting) {
+    	if(bQueuedMsgAvailable()) {
+    		nxtDisplayCenteredTextLine(2, "%s", "Message Recieved.");
+    		waiting = false;
+    	}
+    	else {
+    		nxtDisplayCenteredTextLine(2, "%s", "Waiting...");
+    	}
+    	wait1Msec(10);
+    }
 
     // Interpret Message
     word error = messageParm[0];
     if(error == 1){
         nxtDisplayCenteredTextLine(3, "%s", "No error.");
     }
-    else if(error = 2) {
+    else if(error == 2) {
         nxtDisplayCenteredTextLine(3, "%s", "Manual override engaged.");
     }
-    else if(error = 4) {
+    else if(error == 4) {
         nxtDisplayCenteredTextLine(3, "%s", "Out of bounds detected");
     }
-    else if(error = 8) {
+    else if(error == 8) {
         nxtDisplayCenteredTextLine(3, "%s", "No ALV marker seen");
     }
-    else if(error = 16) {
+    else if(error == 16) {
         nxtDisplayCenteredTextLine(3, "%s", "LSTS system error");
     }
-    else if(error = 32) {
-        nxtDisplayCenteredTextLine(3, "%s", "Busy – request again later");
+    else if(error == 32) {
+        nxtDisplayCenteredTextLine(3, "%s", "Busy,?? request again later");
     }
     else {
         nxtDisplayCenteredTextLine(3, "%s", "Error not recognized!");
     }
 
     // Interpret Coordinates
-    nxtDisplayCenteredTextLine(4, "X: %s", messageParm[1]);
-    nxtDisplayCenteredTextLine(5, "Y: %s", messageParm[2]);
+    word xCoord = messageParm[1];
+    word yCoord = messageParm[2];
+    nxtDisplayCenteredTextLine(4, "X: %d", xCoord);
+    nxtDisplayCenteredTextLine(5, "Y: %d", yCoord);
 
-
-    wait10Msec(500);
+    wait1Msec(50000);
     ClearMessage();
     eraseDisplay();
 }
