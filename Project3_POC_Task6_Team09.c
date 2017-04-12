@@ -45,11 +45,31 @@ task main() {
     // Interpret Message
     word error = messageParm[0];
     if(error == 1){
-        nxtDisplayCenteredTextLine(7, "%s", "No error.");
+        nxtDisplayCenteredTextLine(3, "%s", "No error.");
+    }
+    else if(error = 2) {
+        nxtDisplayCenteredTextLine(3, "%s", "Manual override engaged.");
+    }
+    else if(error = 4) {
+        nxtDisplayCenteredTextLine(3, "%s", "Out of bounds detected");
+    }
+    else if(error = 8) {
+        nxtDisplayCenteredTextLine(3, "%s", "No ALV marker seen");
+    }
+    else if(error = 16) {
+        nxtDisplayCenteredTextLine(3, "%s", "LSTS system error");
+    }
+    else if(error = 32) {
+        nxtDisplayCenteredTextLine(3, "%s", "Busy – request again later");
     }
     else {
-        nxtDisplayCenteredTextLine(4, "%s", "error");
+        nxtDisplayCenteredTextLine(3, "%s", "Error not recognized!");
     }
+
+    // Interpret Coordinates
+    nxtDisplayCenteredTextLine(4, "X: %s", messageParm[1]);
+    nxtDisplayCenteredTextLine(5, "Y: %s", messageParm[2]);
+
 
     wait10Msec(500);
     ClearMessage();
