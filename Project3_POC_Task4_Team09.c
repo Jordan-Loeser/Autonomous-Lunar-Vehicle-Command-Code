@@ -37,19 +37,22 @@ task main() {
     int magnetCalibrationValue = 473; // Default
 
     // Move to search area
-    //moveDistanceCm(50, 20);
+    moveDistanceCm(50, 20);
 
     // Start searching
     magnetCalibrationValue = SensorRaw[S4];
     int magnetValue = magnetCalibrationValue;
     int diff = magnetCalibrationValue - magnetValue;
     while(abs(diff) < 10){
-    	moveDistanceCm(1, 20);
     	magnetValue = SensorRaw[S4];
     	diff = magnetCalibrationValue - magnetValue;
     	nxtDisplayCenteredTextLine(1, "MAGNET: %d", magnetValue);
     	nxtDisplayCenteredTextLine(3, "DIFF: %d", diff);
+    	wait1Msec(500);
     }
+
+    motor[motorA] = 0;
+    motor[motorB] = 0;
 
     // Go over Beacon
     moveDistanceCm(5, 20);
@@ -59,8 +62,6 @@ task main() {
         playSound(soundDownwardTones);
         wait10Msec(100);
     }
-
-
 
    	sleep(1000);
 }

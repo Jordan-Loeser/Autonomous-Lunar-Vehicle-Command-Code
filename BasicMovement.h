@@ -2,7 +2,8 @@
 #define PI 4 * atan(1.0)
 #define diameter 8
 #define circumference (diameter * PI)
-#define RotationalTextureGainFactor 1.15
+#define RotationalTextureGainFactorLeft 1.3
+#define RotationalTextureGainFactorRight 1.2
 #define LinearTextureGainFactor 1.1
 #define transitionDelay 50
 
@@ -27,6 +28,7 @@ void displayPosition(Position currentPosition){
 Move forwards a set distance in mm.
 */
 void moveDistanceMm(int distanceMm, int power) {
+
     // Initialize Variables
     nMotorEncoder[motorA] = 0;
     nMotorEncoder[motorB] = 0;
@@ -58,16 +60,14 @@ void moveDistanceCm(int distanceCm, int power) {
 Rotate a specific amount of degrees.
 */
 int turnLeftDeg(int degrees, int power) {
-		//wait10Msec(transitionDelay)
 
     // Initialize Variables
     nMotorEncoder[motorA] = 0;
     nMotorEncoder[motorB] = 0;
 
     // Determine Tickgoal
-    float ticksPerDeg = 1.758 * RotationalTextureGainFactor;
+    float ticksPerDeg = 1.758 * RotationalTextureGainFactorLeft;
     int tickGoal = (ticksPerDeg * degrees);
-    //printf("%d", tickGoal);
 
     // Run Motors
     motor[motorA] = -1 * power;
@@ -86,14 +86,13 @@ int turnLeftDeg(int degrees, int power) {
     return -1 * degrees;
 }
 int turnRightDeg(int degrees, int power) {
-		//wait10Msec(transitionDelay)
 
     // Initialize Variables
     nMotorEncoder[motorA] = 0;
     nMotorEncoder[motorB] = 0;
 
     // Determine Tickgoal
-    float ticksPerDeg = 1.758 * RotationalTextureGainFactor;
+    float ticksPerDeg = 1.758 * RotationalTextureGainFactorRight;
     int tickGoal = (ticksPerDeg * degrees);
 
     // Run Motors
@@ -187,51 +186,109 @@ Move Vertically To a specific Y coord
 */
 void moveVerticallyTo(int goalYPos, Position &currentPosition, int power){
 
+    // Initialize Variables
+    nMotorEncoder[motorA] = 0;
+    nMotorEncoder[motorB] = 0;
+    int initialYPos = currentPosition.y;
+    int ticksPerMm = 360 / circumference;
+    int distanceMm = abs(goalYPos - currentPosition.y) * 10;
+    nxtDisplayCenteredTextLine(6, "MOVE Y: %d cm", distanceMm / 10);
+    int tickGoal = (ticksPerMm * distanceMm) / 10;
+
     if(currentPosition.y > goalYPos) { // ALV must move down
         faceSouth(currentPosition, power);
         wait10Msec(transitionDelay);
-        while(currentPosition.y > goalYPos){
-            moveDistanceCm(1, power);
-            currentPosition.y -= 1;
-            displayPosition(currentPosition);
-        }
+    		// Move
+    		nMotorEncoder[motorA] = 0;
+    		nMotorEncoder[motorB] = 0;
+    		while(abs(nMotorEncoder[motorA]) < tickGoal){
+    		    // TODO: Update to sync motors digitally?
+     		   motor[motorA] = power; // Left
+     		   motor[motorB] = power; // Right
+   			}
+   			currentPosition.y = initialYPos - (distanceMm / 10);
+   			displayPosition(currentPosition);
+    		nxtDisplayCenteredTextLine(4, "FINAL Y: %d", currentPosition.y);
     }
     else { // ALV must move up
         faceNorth(currentPosition, power);
         wait10Msec(transitionDelay);
-        while(currentPosition.y < goalYPos){
-            moveDistanceCm(1, power);
-            currentPosition.y += 1;
-            displayPosition(currentPosition);
-        }
+    		// Move
+    		nMotorEncoder[motorA] = 0;
+    		nMotorEncoder[motorB] = 0;
+    		while(abs(nMotorEncoder[motorA]) < tickGoal){
+    		    // TODO: Update to sync motors digitally?
+     		   motor[motorA] = power; // Left
+     		   motor[motorB] = power; // Right
+   			}
+    		currentPosition.y = initialYPos + (distanceMm / 10);
+   			displayPosition(currentPosition);
+    		nxtDisplayCenteredTextLine(4, "FINAL Y: %d", currentPosition.y);
     }
+
+    // Stop Motors
+    motor[motorA] = 0; // Left
+    motor[motorB] = 0; // Right
 
     return;
 }
 
 /*
-Move Vertically To a specific Y coord
+Move Horizontally To a specific X coord
 */
 void moveHorizontallyTo(int goalXPos, Position &currentPosition, int power){
+
+    // Initialize Variables
+    nMotorEncoder[motorA] = 0;
+    nMotorEncoder[motorB] = 0;
+    int ticksPerMm = 360 / circumference;
+    int initialXPos = currentPosition.x;
+    int distanceMm = abs(goalXPos - currentPosition.x) * 10;
+    nxtDisplayCenteredTextLine(6, "MOVE X: %d cm", distanceMm / 10);
+    int tickGoal = (ticksPerMm * distanceMm) / 10;
 
     if(currentPosition.x > goalXPos) { // ALV must move west
         faceWest(currentPosition, power);
         wait10Msec(transitionDelay);
-        while(currentPosition.x > goalXPos){
-            moveDistanceCm(1, power);
-            currentPosition.x -= 1;
-            displayPosition(currentPosition);
-        }
+    		// Move
+    		nMotorEncoder[motorA] = 0;
+    		nMotorEncoder[motorB] = 0;
+    		while(abs(nMotorEncoder[motorA]) < tickGoal){
+    		   // TODO: Update to sync motors digitally?
+     		   motor[motorA] = power; // Left
+     		   motor[motorB] = power; // Right
+   			}
+    		currentPosition.x = initialXPos - (distanceMm / 10);
+   			displayPosition(currentPosition);
+    		nxtDisplayCenteredTextLine(4, "FINAL X: %d", currentPosition.y);
     }
     else { // ALV must move east
         faceEast(currentPosition, power);
         wait10Msec(transitionDelay);
-        while(currentPosition.x < goalXPos){
-            moveDistanceCm(1, power);
-            currentPosition.x += 1;
-            displayPosition(currentPosition);
-        }
+    		// Move
+    		nMotorEncoder[motorA] = 0;
+    		nMotorEncoder[motorB] = 0;
+    		while(abs(nMotorEncoder[motorA]) < tickGoal){
+    		   // TODO: Update to sync motors digitally?
+     		   motor[motorA] = power; // Left
+     		   motor[motorB] = power; // Right
+   			}
+    		currentPosition.x = initialXPos + (distanceMm / 10);
+   			displayPosition(currentPosition);
+    		nxtDisplayCenteredTextLine(4, "FINAL X: %d", currentPosition.y);
     }
+    wait10Msec(transitionDelay);
+
+    // Move
+    while(abs(nMotorEncoder[motorA]) < tickGoal){
+        // TODO: Update to sync motors digitally?
+        motor[motorA] = power; // Left
+        motor[motorB] = power; // Right
+    }
+
+    // Stop Motors
+    motor[motorA] = 0;
+    motor[motorB] = 0;
 
     return;
 }

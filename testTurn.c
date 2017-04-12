@@ -32,4 +32,6 @@
 
 task main() {
 	 turnLeftDeg(90, 20);
+	 wait10Msec(100);
+	 turnRightDeg(90, 20);
 }

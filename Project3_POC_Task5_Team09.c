@@ -38,14 +38,12 @@ task main() {
     nMotorEncoder[motorC] = 0;
 
     // Move Forward
-    /*
    	moveDistanceCm(45, 20);
    	turnRightDeg(90, 20);
    	moveDistanceCm(35, 20);
    	turnLeftDeg(90, 20);
    	moveDistanceCm(30, 20);
    	turnRightDeg(180, 20);
-   	*/
 
    	// Drop Off
    	dropOffBin();
@@ -54,9 +52,11 @@ task main() {
    	wait10Msec(100);
    	dropOffBin();
    	wait10Msec(100);
-   	//dropOffBin();
+   	dropOffBin();
+   	wait10Msec(100);
+   	dropOffBin();
 
    	// Move Away
-   	//moveDistanceCm(30, 20);
+   	moveDistanceCm(30, 20);
 
 }

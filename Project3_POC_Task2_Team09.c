@@ -86,5 +86,6 @@ task main() {
    	// Move to home y position
     moveVerticallyTo(startY, currentPosition, 25);
     wait10Msec(transitionDelay);
+    faceEast(currentPosition, 20);
 
 }
