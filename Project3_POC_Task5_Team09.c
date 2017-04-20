@@ -37,13 +37,13 @@ task main() {
     nMotorEncoder[motorB] = 0;
     nMotorEncoder[motorC] = 0;
 
-    // Move Forward
-   	moveDistanceCm(45, 20);
-   	turnRightDeg(90, 20);
-   	moveDistanceCm(35, 20);
-   	turnLeftDeg(90, 20);
-   	moveDistanceCm(30, 20);
-   	turnRightDeg(180, 20);
+    //// Move Forward
+   	//moveDistanceCm(45, 20);
+   	//turnRightDeg(80, 20);
+   	//moveDistanceCm(35, 20);
+   	//turnLeftDeg(90, 20);
+   	//moveDistanceCm(30, 20);
+   	//turnRightDeg(100, 20);
 
    	// Drop Off
    	dropOffBin();
@@ -57,6 +57,6 @@ task main() {
    	dropOffBin();
 
    	// Move Away
-   	moveDistanceCm(30, 20);
+   	//moveDistanceCm(30, 20);
 
 }

@@ -39,8 +39,8 @@ task main() {
     Position currentPosition;
     int goalX = 135; // cm
     int goalY = 75;
-    int startX = 20;
-    int startY = 50;
+    int startX = 35;
+    int startY = 35;
 
    	// Initialize Starting Position
     currentPosition.x = startX;
@@ -49,16 +49,16 @@ task main() {
 
     // Move to suitable y Position (30)
     if(startY > 30){
-   		moveVerticallyTo(30, currentPosition, 25);
+   		moveVerticallyTo(30, currentPosition, 20);
    	}
    	wait10Msec(transitionDelay);
 
     // Move to final x Position
-    moveHorizontallyTo(goalX, currentPosition, 25);
+    moveHorizontallyTo(goalX, currentPosition, 20);
     wait10Msec(transitionDelay);
 
    	// Move to final y position
-    moveVerticallyTo(goalY, currentPosition, 25);
+    moveVerticallyTo(goalY, currentPosition, 20);
     wait10Msec(transitionDelay);
 
     // At Goal - Beep Thrice
@@ -72,19 +72,19 @@ task main() {
 
     // Move to suitable y Position (30)
     if(startY > 30){
-   		moveVerticallyTo(30, currentPosition, 25);
+   		moveVerticallyTo(30, currentPosition, 20);
    	}
    	else {
-   		moveVerticallyTo(startY, currentPosition, 25);
+   		moveVerticallyTo(startY, currentPosition, 20);
    	}
    	wait10Msec(transitionDelay);
 
     // Move to home x Position
-    moveHorizontallyTo(startX, currentPosition, 25);
+    moveHorizontallyTo(startX, currentPosition, 20);
     wait10Msec(transitionDelay);
 
    	// Move to home y position
-    moveVerticallyTo(startY, currentPosition, 25);
+    moveVerticallyTo(startY, currentPosition, 20);
     wait10Msec(transitionDelay);
     faceEast(currentPosition, 20);
 

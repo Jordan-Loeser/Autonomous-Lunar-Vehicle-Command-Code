@@ -36,7 +36,7 @@ task main() {
     nMotorEncoder[motorA] = 0;
     nMotorEncoder[motorB] = 0;
 
-    turnLeftDeg(30, 20);
+    turnLeftDeg(30, 30);
 
     // Move Forward
    	moveDistanceCm(200, 20);

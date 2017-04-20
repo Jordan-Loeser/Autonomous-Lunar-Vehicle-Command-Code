@@ -31,7 +31,7 @@
 #include "BasicMovement.h"
 
 task main() {
-	 turnLeftDeg(90, 20);
+	 turnLeftDeg(90, 30);
 	 wait10Msec(100);
-	 turnRightDeg(90, 20);
+	 turnRightDeg(90, 30);
 }

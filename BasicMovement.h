@@ -2,8 +2,8 @@
 #define PI 4 * atan(1.0)
 #define diameter 8
 #define circumference (diameter * PI)
-#define RotationalTextureGainFactorLeft 1.3
-#define RotationalTextureGainFactorRight 1.2
+#define RotationalTextureGainFactorLeft 2.05
+#define RotationalTextureGainFactorRight 1.43
 #define LinearTextureGainFactor 1.1
 #define transitionDelay 50
 
@@ -32,7 +32,7 @@ void moveDistanceMm(int distanceMm, int power) {
     // Initialize Variables
     nMotorEncoder[motorA] = 0;
     nMotorEncoder[motorB] = 0;
-    int ticksPerMm = 360 / circumference;
+    int ticksPerMm = (360 / circumference) * LinearTextureGainFactor;
     int tickGoal = (ticksPerMm * distanceMm) / 10;
 
     // Move
@@ -190,13 +190,13 @@ void moveVerticallyTo(int goalYPos, Position &currentPosition, int power){
     nMotorEncoder[motorA] = 0;
     nMotorEncoder[motorB] = 0;
     int initialYPos = currentPosition.y;
-    int ticksPerMm = 360 / circumference;
+    int ticksPerMm = (360 / circumference) * LinearTextureGainFactor;
     int distanceMm = abs(goalYPos - currentPosition.y) * 10;
     nxtDisplayCenteredTextLine(6, "MOVE Y: %d cm", distanceMm / 10);
     int tickGoal = (ticksPerMm * distanceMm) / 10;
 
     if(currentPosition.y > goalYPos) { // ALV must move down
-        faceSouth(currentPosition, power);
+        faceSouth(currentPosition, power + 10);
         wait10Msec(transitionDelay);
     		// Move
     		nMotorEncoder[motorA] = 0;
@@ -211,7 +211,7 @@ void moveVerticallyTo(int goalYPos, Position &currentPosition, int power){
     		nxtDisplayCenteredTextLine(4, "FINAL Y: %d", currentPosition.y);
     }
     else { // ALV must move up
-        faceNorth(currentPosition, power);
+        faceNorth(currentPosition, power + 10);
         wait10Msec(transitionDelay);
     		// Move
     		nMotorEncoder[motorA] = 0;
@@ -241,14 +241,14 @@ void moveHorizontallyTo(int goalXPos, Position &currentPosition, int power){
     // Initialize Variables
     nMotorEncoder[motorA] = 0;
     nMotorEncoder[motorB] = 0;
-    int ticksPerMm = 360 / circumference;
+    int ticksPerMm = (360 / circumference) * LinearTextureGainFactor;
     int initialXPos = currentPosition.x;
     int distanceMm = abs(goalXPos - currentPosition.x) * 10;
     nxtDisplayCenteredTextLine(6, "MOVE X: %d cm", distanceMm / 10);
     int tickGoal = (ticksPerMm * distanceMm) / 10;
 
     if(currentPosition.x > goalXPos) { // ALV must move west
-        faceWest(currentPosition, power);
+        faceWest(currentPosition, power + 10);
         wait10Msec(transitionDelay);
     		// Move
     		nMotorEncoder[motorA] = 0;
@@ -263,7 +263,7 @@ void moveHorizontallyTo(int goalXPos, Position &currentPosition, int power){
     		nxtDisplayCenteredTextLine(4, "FINAL X: %d", currentPosition.y);
     }
     else { // ALV must move east
-        faceEast(currentPosition, power);
+        faceEast(currentPosition, power + 10);
         wait10Msec(transitionDelay);
     		// Move
     		nMotorEncoder[motorA] = 0;
@@ -304,7 +304,7 @@ void dropOffBin() {
     nMotorEncoder[motorC] = 0;
     int treadDiameterMm = 30;
     int ticksPerMm = 360 / (treadDiameterMm * PI);
-    int binWidthMm = 36;
+    int binWidthMm = 40.5;
     int tickGoal = (ticksPerMm * binWidthMm);
 
     // Move

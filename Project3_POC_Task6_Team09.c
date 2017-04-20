@@ -37,21 +37,11 @@ task main() {
     nxtDisplayCenteredTextLine(1, "%s", "Initialized...");
 
     // Send Initial LSTS Request
-    //ClearMessage();
+    ClearMessage();
     sendMessage(10); // Height of Marker in mm
     nxtDisplayCenteredTextLine(1, "%s", "Message Sent...");
     wait1Msec(5000);
-    bool waiting = true;
-    while(waiting) {
-    	if(bQueuedMsgAvailable()) {
-    		nxtDisplayCenteredTextLine(2, "%s", "Message Recieved.");
-    		waiting = false;
-    	}
-    	else {
-    		nxtDisplayCenteredTextLine(2, "%s", "Waiting...");
-    	}
-    	wait1Msec(10);
-    }
+    eraseDisplay();
 
     // Interpret Message
     word error = messageParm[0];
@@ -71,19 +61,26 @@ task main() {
         nxtDisplayCenteredTextLine(3, "%s", "LSTS system error");
     }
     else if(error == 32) {
-        nxtDisplayCenteredTextLine(3, "%s", "Busy,?? request again later");
+        nxtDisplayCenteredTextLine(3, "%s", "Busy, request again later");
     }
     else {
         nxtDisplayCenteredTextLine(3, "%s", "Error not recognized!");
     }
 
     // Interpret Coordinates
-    word xCoord = messageParm[1];
-    word yCoord = messageParm[2];
-    nxtDisplayCenteredTextLine(4, "X: %d", xCoord);
-    nxtDisplayCenteredTextLine(5, "Y: %d", yCoord);
+    //word xCoord = messageParm[1];
+    //word yCoord = messageParm[2];
+    //nxtDisplayCenteredTextLine(4, "X: %d", xCoord);
+    //nxtDisplayCenteredTextLine(5, "Y: %d", yCoord);
+    nxtDisplayCenteredTextLine(4, "%d", messageParm[0]);
+    nxtDisplayCenteredTextLine(5, "%d", messageParm[1]);
+    nxtDisplayCenteredTextLine(6, "%d", messageParm[2]);
 
-    wait1Msec(50000);
+
+    wait1Msec(5000);
     ClearMessage();
+    ClearMessage();
+
+    wait1Msec(5000);
     eraseDisplay();
 }
