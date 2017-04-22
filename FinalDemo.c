@@ -57,15 +57,14 @@ task main() {
     int startY = 0;
     currentPosition.x = startX;
     currentPosition.y = startY;
-    currentPosition.orientation = 90;
+    currentPosition.orientation = 90; // CHANGE BEFORE DEMO
 
     // Go To Beacon A
+    moveHorizontallyTo(beaconA.x, currentPosition, basePower);
+    wait10Msec(transitionDelay);
     moveVerticallyTo(beaconA.y, currentPosition, basePower);
     wait10Msec(transitionDelay);
-    moveHorizontallyTo(beaconA.x - 5, currentPosition, basePower);
-    wait10Msec(transitionDelay);
     fixPositionError(currentPosition, basePower);
-    // TODO: Magnet sensor
 
     faceEast(currentPosition, basePower);
     dropOffBin();
@@ -76,7 +75,6 @@ task main() {
     moveHorizontallyTo(beaconC.x - 5, currentPosition, basePower);
     wait10Msec(transitionDelay);
     fixPositionError(currentPosition, basePower);
-    // TODO: Magnet sensor
 
     faceWest(currentPosition, basePower);
     dropOffBin();
@@ -87,7 +85,6 @@ task main() {
     moveHorizontallyTo(beaconB.x - 5, currentPosition, basePower);
     wait10Msec(transitionDelay);
     fixPositionError(currentPosition, basePower);
-    // TODO: Magnet sensor
 
     faceSouth(currentPosition, basePower);
     dropOffBin();
@@ -96,6 +93,5 @@ task main() {
     wait10Msec(transitionDelay);
     moveHorizontallyTo(startX, currentPosition, basePower);
     wait10Msec(transitionDelay);
-    // TODO: Check LSTS position & Fix
 
 }

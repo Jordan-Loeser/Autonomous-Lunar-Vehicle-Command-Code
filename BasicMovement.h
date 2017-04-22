@@ -279,13 +279,6 @@ void moveHorizontallyTo(int goalXPos, Position &currentPosition, int power){
     }
     wait10Msec(transitionDelay);
 
-    // Move
-    while(abs(nMotorEncoder[motorA]) < tickGoal){
-        // TODO: Update to sync motors digitally?
-        motor[motorA] = power; // Left
-        motor[motorB] = power; // Right
-    }
-
     // Stop Motors
     motor[motorA] = 0;
     motor[motorB] = 0;

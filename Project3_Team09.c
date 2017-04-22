@@ -85,7 +85,6 @@ task main() {
   currentPosition.y = (int) yCoord;
   currentPosition.orientation = 90; // THIS WONT BE TRUE FOR FINAL DEMO
 
-
   wait1Msec(3000);
   ClearMessage();
   ClearMessage();
