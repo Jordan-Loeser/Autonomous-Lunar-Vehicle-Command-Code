@@ -32,7 +32,16 @@
 #include "Demo.h"
 
 task main() {
-	 turnLeftDeg(90, turnPower);
-	 wait10Msec(100);
-	 turnRightDeg(90, 30);
+
+	Position testPosition;
+	testPosition.x = 0;
+	testPosition.y = 0;
+	testPosition.orientation = 0;
+
+	turnLeftDeg(testPosition, 90, turnPower);
+	displayPosition(testPosition);
+	wait10Msec(100);
+	turnRightDeg(testPosition, 90, 30);
+	displayPosition(testPosition);
+	wait10Msec(100);
 }

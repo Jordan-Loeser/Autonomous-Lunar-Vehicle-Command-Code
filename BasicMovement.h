@@ -2,9 +2,9 @@
 #define PI 4 * atan(1.0)
 #define diameter 8
 #define circumference (diameter * PI)
-#define RotationalTextureGainFactorLeft 2.05
-#define RotationalTextureGainFactorRight 1.43
-#define LinearTextureGainFactor 1.0
+#define RotationalTextureGainFactorLeft 1.85
+#define RotationalTextureGainFactorRight 1.30
+#define LinearTextureGainFactor 1.1
 #define transitionDelay 50
 
 #define basePower 20
@@ -89,7 +89,7 @@ int turnLeftDeg(Position &currentPosition, int degrees, int power) {
     motor[motorB] = 0;
 
     // Update Orientation
-    currentPosition.orientation = (currentPosition.orientation - degrees) % 360;
+    currentPosition.orientation = ((currentPosition.orientation - degrees  + 360) % 360);
 
     return -1 * degrees;
 }

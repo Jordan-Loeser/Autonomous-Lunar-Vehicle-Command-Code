@@ -1,4 +1,4 @@
-#define heightMarker 10
+#define heightMarker 160
 
 void interpretError(word error){
     // Interpret Message
@@ -38,6 +38,7 @@ void getAccuratePosition(Position &currentPosition){
 
   	// Send Initial LSTS Request
   	ClearMessage();
+  	ClearMessage();
   	sendMessage(heightMarker); // Height of Marker in mm
   	nxtDisplayCenteredTextLine(1, "%s", "Message Sent...");
   	wait1Msec(5000);
@@ -45,8 +46,8 @@ void getAccuratePosition(Position &currentPosition){
 
   	// Interpret Coordinates
   	interpretError(messageParm[0]);
-  	int xCoord = (int) messageParm[1];
-  	int yCoord = (int) messageParm[2];
+  	int xCoord = (int) messageParm[1] / 10;
+  	int yCoord = (int) messageParm[2] / 10;
   	nxtDisplayCenteredTextLine(4, "Error: %d", messageParm[0]);
   	nxtDisplayCenteredTextLine(5, "X: %d", messageParm[1]);
   	nxtDisplayCenteredTextLine(6, "Y: %d", messageParm[2]);
@@ -80,28 +81,7 @@ void altFixPositionError(Position &currentPosition, int inputPower, int magnetCa
 
     while(!onTarget && !foundMagnet) {
         // Get Actual Position
-        eraseDisplay();
-        nxtDisplayCenteredTextLine(1, "%s", "Initialized...");
-        ClearMessage();
-        sendMessage(heightMarker); // Height of Marker in mm
-        nxtDisplayCenteredTextLine(1, "%s", "Message Sent...");
-        wait1Msec(5000);
-        eraseDisplay();
-
-        interpretError(messageParm[0]);
-
-        // Interpret Coordinates
-        currentPosition.x = (int) messageParm[1];
-        currentPosition.y = (int) messageParm[2];
-        //nxtDisplayCenteredTextLine(4, "%d", messageParm[0]);
-        displayPosition(currentPosition);
-
-        wait1Msec(3000);
-        ClearMessage();
-        ClearMessage();
-
-        wait1Msec(2000);
-        eraseDisplay();
+        getAccuratePosition(currentPosition);
 
         if( sqrt(pow(currentPosition.x - idealX, 2) + pow(currentPosition.y - idealY, 2)) < 10) { // TODO: Tolerance
             onTarget = true;

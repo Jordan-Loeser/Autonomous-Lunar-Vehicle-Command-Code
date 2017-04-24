@@ -43,8 +43,8 @@ task main() {
     // Beacon Positions
     // A: (55, 2basePower)
     Position testPos;
-    beaconA.x = 20;
-    beaconA.y = 30;
+    testPos.x = 500;
+    testPos.y = 300;
 
     getAccuratePosition(currentPosition);
     currentPosition.orientation = 0; // CHANGE BEFORE DEMO

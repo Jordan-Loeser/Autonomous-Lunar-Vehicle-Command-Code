@@ -56,37 +56,6 @@ task main() {
     beaconC.x = 298;
     beaconC.y = 71;
 
-    /*
-  	wait1Msec(3000); // RobotC Quirk
-
-  	nxtDisplayCenteredTextLine(1, "%s", "Initialized...");
-
-  	// Send Initial LSTS Request
-  	ClearMessage();
-  	sendMessage(10); // Height of Marker in mm
-  	nxtDisplayCenteredTextLine(1, "%s", "Message Sent...");
-  	wait1Msec(5000);
-  	eraseDisplay();
-
-  	// Interpret Coordinates
-  	interpretError(messageParm[0]);
-  	int xCoord = (int) messageParm[1];
-  	int yCoord = (int) messageParm[2];
-  	nxtDisplayCenteredTextLine(4, "Error: %d", messageParm[0]);
-  	nxtDisplayCenteredTextLine(5, "X: %d", messageParm[1]);
-  	nxtDisplayCenteredTextLine(6, "Y: %d", messageParm[2]);
-
-  	wait1Msec(2000);
-    ClearMessage();
-    ClearMessage();
-
-    wait1Msec(2000);
-    eraseDisplay();
-
-    currentPosition.x = xCoord;
-    currentPosition.y = yCoord;
-    */
-
     getAccuratePosition(currentPosition);
     currentPosition.orientation = 135; // CHANGE BEFORE DEMO
 
@@ -113,6 +82,7 @@ task main() {
     altFixPositionError(currentPosition, basePower, magnetCalibrationValue);
     moveDistanceCm(30, basePower + 10);
     dropOffBin();
+    dropOffBin();
 
     /*
 
@@ -124,6 +94,8 @@ task main() {
     altFixPositionError(currentPosition, basePower);
 
     faceWest(currentPosition, basePower);
+    dropOffBin();
+    dropOffBin();
     dropOffBin();
 
     // Go To Beacon B
