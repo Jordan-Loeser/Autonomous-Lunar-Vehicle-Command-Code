@@ -29,6 +29,7 @@
  */
 
 #include "BasicMovement.h"
+#include "Demo.h"
 
 task main() {
     // Clean Slate
@@ -36,45 +37,91 @@ task main() {
     nMotorEncoder[motorB] = 0;
 
     // Define Variables
-    Position currentPosition;
+		Position currentPosition;
+		int magnetCalibrationValue = SensorRaw[S4];
 
     // Beacon Positions
     // A: (55, 2basePower)
     Position beaconA;
     beaconA.x = 55;
     beaconA.y = 220;
+
     // B: (250, 163)
     Position beaconB;
     beaconB.x = 250;
     beaconB.y = 163;
+
     // C: (298, 71)
     Position beaconC;
     beaconC.x = 298;
     beaconC.y = 71;
 
-   	// TODO: LSTS Initialize Starting Position
-    int startX = 0;
-    int startY = 0;
-    currentPosition.x = startX;
-    currentPosition.y = startY;
-    currentPosition.orientation = 90; // CHANGE BEFORE DEMO
+    /*
+  	wait1Msec(3000); // RobotC Quirk
+
+  	nxtDisplayCenteredTextLine(1, "%s", "Initialized...");
+
+  	// Send Initial LSTS Request
+  	ClearMessage();
+  	sendMessage(10); // Height of Marker in mm
+  	nxtDisplayCenteredTextLine(1, "%s", "Message Sent...");
+  	wait1Msec(5000);
+  	eraseDisplay();
+
+  	// Interpret Coordinates
+  	interpretError(messageParm[0]);
+  	int xCoord = (int) messageParm[1];
+  	int yCoord = (int) messageParm[2];
+  	nxtDisplayCenteredTextLine(4, "Error: %d", messageParm[0]);
+  	nxtDisplayCenteredTextLine(5, "X: %d", messageParm[1]);
+  	nxtDisplayCenteredTextLine(6, "Y: %d", messageParm[2]);
+
+  	wait1Msec(2000);
+    ClearMessage();
+    ClearMessage();
+
+    wait1Msec(2000);
+    eraseDisplay();
+
+    currentPosition.x = xCoord;
+    currentPosition.y = yCoord;
+    */
+
+    getAccuratePosition(currentPosition);
+    currentPosition.orientation = 135; // CHANGE BEFORE DEMO
+
+   	faceEast(currentPosition, turnPower);
 
     // Go To Beacon A
-    moveHorizontallyTo(beaconA.x, currentPosition, basePower);
+    moveHorizontallyTo(beaconA.x, currentPosition, basePower, magnetCalibrationValue);
     wait10Msec(transitionDelay);
-    moveVerticallyTo(beaconA.y, currentPosition, basePower);
+    moveVerticallyTo(beaconA.y, currentPosition, basePower, magnetCalibrationValue);
     wait10Msec(transitionDelay);
-    fixPositionError(currentPosition, basePower);
 
-    faceEast(currentPosition, basePower);
+    altFixPositionError(currentPosition, basePower, magnetCalibrationValue);
+    moveDistanceCm(30, basePower + 10);
     dropOffBin();
+
+    getAccuratePosition(currentPosition);
+
+    // Go To Beacon B
+    moveVerticallyTo(beaconB.y, currentPosition, basePower, magnetCalibrationValue);
+    wait10Msec(transitionDelay);
+    moveHorizontallyTo(beaconB.x, currentPosition, basePower, magnetCalibrationValue);
+    wait10Msec(transitionDelay);
+
+    altFixPositionError(currentPosition, basePower, magnetCalibrationValue);
+    moveDistanceCm(30, basePower + 10);
+    dropOffBin();
+
+    /*
 
     // Go To Beacon C
     moveVerticallyTo(beaconC.y, currentPosition, basePower);
     wait10Msec(transitionDelay);
     moveHorizontallyTo(beaconC.x - 5, currentPosition, basePower);
     wait10Msec(transitionDelay);
-    fixPositionError(currentPosition, basePower);
+    altFixPositionError(currentPosition, basePower);
 
     faceWest(currentPosition, basePower);
     dropOffBin();
@@ -84,7 +131,7 @@ task main() {
     wait10Msec(transitionDelay);
     moveHorizontallyTo(beaconB.x - 5, currentPosition, basePower);
     wait10Msec(transitionDelay);
-    fixPositionError(currentPosition, basePower);
+    altFixPositionError(currentPosition, basePower);
 
     faceSouth(currentPosition, basePower);
     dropOffBin();
@@ -93,5 +140,5 @@ task main() {
     wait10Msec(transitionDelay);
     moveHorizontallyTo(startX, currentPosition, basePower);
     wait10Msec(transitionDelay);
-
+    */
 }

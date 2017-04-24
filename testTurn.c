@@ -29,9 +29,10 @@
  */
 
 #include "BasicMovement.h"
+#include "Demo.h"
 
 task main() {
-	 turnLeftDeg(90, 30);
+	 turnLeftDeg(90, turnPower);
 	 wait10Msec(100);
 	 turnRightDeg(90, 30);
 }

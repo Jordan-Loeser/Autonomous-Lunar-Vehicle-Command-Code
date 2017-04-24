@@ -37,7 +37,7 @@ task main() {
     int magnetCalibrationValue = 473; // Default
 
     // Move to search area
-    moveDistanceCm(50, 20);
+    //moveDistanceCm(50, 20);
 
     // Start searching
     magnetCalibrationValue = SensorRaw[S4];
@@ -57,7 +57,7 @@ task main() {
     motor[motorB] = 0;
 
     // Go over Beacon
-    moveDistanceCm(5, 20);
+    //moveDistanceCm(5, 20);
 
     // Beacon was found
     for(int i = 0; i < 3; i++){

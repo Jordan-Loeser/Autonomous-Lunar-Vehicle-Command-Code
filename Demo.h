@@ -1,18 +1,80 @@
-#define basePower 20
+#define heightMarker 10
+
+void interpretError(word error){
+    // Interpret Message
+    if(error == 1){
+        nxtDisplayCenteredTextLine(3, "%s", "No error.");
+      }
+    else if(error == 2) {
+          nxtDisplayCenteredTextLine(3, "%s", "Manual override engaged.");
+      }
+    else if(error == 4) {
+          nxtDisplayCenteredTextLine(3, "%s", "Out of bounds detected");
+      }
+    else if(error == 8) {
+          nxtDisplayCenteredTextLine(3, "%s", "No ALV marker seen");
+      }
+    else if(error == 16) {
+          nxtDisplayCenteredTextLine(3, "%s", "LSTS system error");
+      }
+    else if(error == 32) {
+          nxtDisplayCenteredTextLine(3, "%s", "Busy, request again later");
+      }
+    else {
+          nxtDisplayCenteredTextLine(3, "%s", "Error not recognized!");
+      }
+}
+
+/*
+Update Position
+*/
+void getAccuratePosition(Position &currentPosition){
+
+		eraseDisplay();
+
+		wait1Msec(3000);
+
+	  nxtDisplayCenteredTextLine(1, "%s", "Initialized...");
+
+  	// Send Initial LSTS Request
+  	ClearMessage();
+  	sendMessage(heightMarker); // Height of Marker in mm
+  	nxtDisplayCenteredTextLine(1, "%s", "Message Sent...");
+  	wait1Msec(5000);
+  	eraseDisplay();
+
+  	// Interpret Coordinates
+  	interpretError(messageParm[0]);
+  	int xCoord = (int) messageParm[1];
+  	int yCoord = (int) messageParm[2];
+  	nxtDisplayCenteredTextLine(4, "Error: %d", messageParm[0]);
+  	nxtDisplayCenteredTextLine(5, "X: %d", messageParm[1]);
+  	nxtDisplayCenteredTextLine(6, "Y: %d", messageParm[2]);
+
+  	wait1Msec(2000);
+    ClearMessage();
+    ClearMessage();
+
+    wait1Msec(2000);
+    eraseDisplay();
+
+    currentPosition.x = xCoord;
+    currentPosition.y = yCoord;
+
+    return;
+}
 
 /*
 Compare LSTS with Actual Position
 */
-void altFixPositionError(Position &currentPosition, int inputPower){
+void altFixPositionError(Position &currentPosition, int inputPower, int magnetCalibrationValue){
 
+		nxtDisplayCenteredTextLine(4, "%s", "Fixing Position!");
     // Initialize Variables
     int idealX = currentPosition.x;
     int idealY = currentPosition.y;
-    int initialOrientation = currentPosition.orientation;
-    int onTarget = FALSE;
-    int foundMagnet = FALSE;
-    int heightMarker = 10;
-    int magnetCalibrationValue = SensorRaw[S4];
+    int onTarget = false;
+    int foundMagnet = false;
     int magnetValue = magnetCalibrationValue;
     int diff = magnetCalibrationValue - magnetValue;
 
@@ -38,11 +100,11 @@ void altFixPositionError(Position &currentPosition, int inputPower){
         ClearMessage();
         ClearMessage();
 
-        wait1Msec(20000);
+        wait1Msec(2000);
         eraseDisplay();
 
-        if((currentPosition.x == idealX) && (currentPosition.y == idealY)){
-            onTarget = TRUE;
+        if( sqrt(pow(currentPosition.x - idealX, 2) + pow(currentPosition.y - idealY, 2)) < 10) { // TODO: Tolerance
+            onTarget = true;
             return;
         }
         else {
@@ -53,25 +115,25 @@ void altFixPositionError(Position &currentPosition, int inputPower){
             nMotorEncoder[motorA] = 0;
             nMotorEncoder[motorB] = 0;
             int ticksPerMm = (360 / circumference) * LinearTextureGainFactor;
-            int distanceMmX = abs(idealX - actualX) * 10;
+            int distanceMmX = abs(idealX - currentPosition.x) * 10;
             nxtDisplayCenteredTextLine(6, "MOVE X: %d cm", distanceMmX / 10);
             int tickGoalX = (ticksPerMm * distanceMmX) / 10;
 
             if(currentPosition.x > idealX) { // ALV must move west
-                faceWest(currentPosition, power + 10);
+                faceWest(currentPosition, turnPower);
                 wait10Msec(transitionDelay);
             		// Move
             		nMotorEncoder[motorA] = 0;
             		nMotorEncoder[motorB] = 0;
             		while( (abs(nMotorEncoder[motorA]) < tickGoalX) ){
-                        if((abs(diff) < 10)){
-                            foundMagnet = TRUE;
+                        if((abs(diff) > 10)){
+                            foundMagnet = true;
                             motor[motorA] = 0; // Left
-                  		    motor[motorB] = 0; // Right
+                  		    	motor[motorB] = 0; // Right
                             return;
                         }
-                        motor[motorA] = power; // Left
-             		    motor[motorB] = power; // Right
+                        motor[motorA] = basePower; // Left
+             		   	 		motor[motorB] = basePower; // Right
                         magnetValue = SensorRaw[S4];
                         diff = magnetCalibrationValue - magnetValue;
            			}
@@ -79,20 +141,20 @@ void altFixPositionError(Position &currentPosition, int inputPower){
            			displayPosition(currentPosition);
             }
             else { // ALV must move east
-                faceEast(currentPosition, power + 10);
+                faceEast(currentPosition, turnPower);
                 wait10Msec(transitionDelay);
             		// Move
             		nMotorEncoder[motorA] = 0;
             		nMotorEncoder[motorB] = 0;
             		while( (abs(nMotorEncoder[motorA]) < tickGoalX) ){
-                        if((abs(diff) < 10)){
-                            foundMagnet = TRUE;
+                        if((abs(diff) > 10)){
+                            foundMagnet = true;
                             motor[motorA] = 0; // Left
-                  		    motor[motorB] = 0; // Right
+                  		    	motor[motorB] = 0; // Right
                             return;
                         }
-                        motor[motorA] = power; // Left
-             		    motor[motorB] = power; // Right
+                        motor[motorA] = basePower; // Left
+             		    		motor[motorB] = basePower; // Right
                         magnetValue = SensorRaw[S4];
                         diff = magnetCalibrationValue - magnetValue;
            			}
@@ -112,25 +174,25 @@ void altFixPositionError(Position &currentPosition, int inputPower){
              // Initialize Variables
              nMotorEncoder[motorA] = 0;
              nMotorEncoder[motorB] = 0;
-             int distanceMmY = abs(idealY - actualY) * 10;
+             int distanceMmY = abs(idealY - currentPosition.y) * 10;
              nxtDisplayCenteredTextLine(6, "MOVE X: %d cm", distanceMmY / 10);
              int tickGoalY = (ticksPerMm * distanceMmY) / 10;
 
              if(currentPosition.y > idealY) { // ALV must move south
-                 faceSouth(currentPosition, power + 10);
+                 faceSouth(currentPosition, turnPower);
                  wait10Msec(transitionDelay);
                     // Move
                     nMotorEncoder[motorA] = 0;
                     nMotorEncoder[motorB] = 0;
                     while( (abs(nMotorEncoder[motorA]) < tickGoalY) ){
-                         if((abs(diff) < 10)){
-                             foundMagnet = TRUE;
+                         if((abs(diff) > 10)){
+                             foundMagnet = true;
                              motor[motorA] = 0; // Left
                              motor[motorB] = 0; // Right
                              return;
                          }
-                         motor[motorA] = power; // Left
-                         motor[motorB] = power; // Right
+                         motor[motorA] = basePower; // Left
+                         motor[motorB] = basePower; // Right
                          magnetValue = SensorRaw[S4];
                          diff = magnetCalibrationValue - magnetValue;
                     }
@@ -138,20 +200,20 @@ void altFixPositionError(Position &currentPosition, int inputPower){
                     displayPosition(currentPosition);
              }
              else { // ALV must move north
-                 faceNorth(currentPosition, power + 10);
+                 faceNorth(currentPosition, turnPower);
                  wait10Msec(transitionDelay);
                     // Move
                     nMotorEncoder[motorA] = 0;
                     nMotorEncoder[motorB] = 0;
                     while( (abs(nMotorEncoder[motorA]) < tickGoalY) ){
-                         if((abs(diff) < 10)){
-                             foundMagnet = TRUE;
+                         if((abs(diff) > 10)){
+                             foundMagnet = true;
                              motor[motorA] = 0; // Left
                              motor[motorB] = 0; // Right
                              return;
                          }
-                         motor[motorA] = power; // Left
-                         motor[motorB] = power; // Right
+                         motor[motorA] = basePower; // Left
+                         motor[motorB] = basePower; // Right
                          magnetValue = SensorRaw[S4];
                          diff = magnetCalibrationValue - magnetValue;
                         }
@@ -170,29 +232,4 @@ void altFixPositionError(Position &currentPosition, int inputPower){
     }
 
 	return;
-}
-
-void interpretError(word error){
-    // Interpret Message
-    if(error == 1){
-        nxtDisplayCenteredTextLine(3, "%s", "No error.");
-      }
-    else if(error == 2) {
-          nxtDisplayCenteredTextLine(3, "%s", "Manual override engaged.");
-      }
-    else if(error == 4) {
-          nxtDisplayCenteredTextLine(3, "%s", "Out of bounds detected");
-      }
-    else if(error == 8) {
-          nxtDisplayCenteredTextLine(3, "%s", "No ALV marker seen");
-      }
-    else if(error == 16) {
-          nxtDisplayCenteredTextLine(3, "%s", "LSTS system error");
-      }
-    else if(error == 32) {
-          nxtDisplayCenteredTextLine(3, "%s", "Busy, request again later");
-      }
-    else {
-          nxtDisplayCenteredTextLine(3, "%s", "Error not recognized!");
-      }
 }

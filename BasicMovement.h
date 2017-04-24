@@ -4,8 +4,11 @@
 #define circumference (diameter * PI)
 #define RotationalTextureGainFactorLeft 2.05
 #define RotationalTextureGainFactorRight 1.43
-#define LinearTextureGainFactor 1.1
+#define LinearTextureGainFactor 1.0
 #define transitionDelay 50
+
+#define basePower 20
+#define turnPower 30
 
 /*
 Struct for robot's current position.
@@ -20,7 +23,9 @@ typedef struct Position_struct{
 Display current position coordinates.
 */
 void displayPosition(Position currentPosition){
-	nxtDisplayCenteredTextLine(1, "\n(%d, %d)\n", currentPosition.x, currentPosition.y);
+	eraseDisplay();
+	nxtDisplayCenteredTextLine(1, "(%d, %d)", currentPosition.x, currentPosition.y);
+	nxtDisplayCenteredTextLine(2, "%d degrees", currentPosition.orientation);
 	return;
 }
 
@@ -59,7 +64,7 @@ void moveDistanceCm(int distanceCm, int power) {
 /*
 Rotate a specific amount of degrees.
 */
-int turnLeftDeg(int degrees, int power) {
+int turnLeftDeg(Position &currentPosition, int degrees, int power) {
 
     // Initialize Variables
     nMotorEncoder[motorA] = 0;
@@ -83,9 +88,12 @@ int turnLeftDeg(int degrees, int power) {
     motor[motorA] = 0;
     motor[motorB] = 0;
 
+    // Update Orientation
+    currentPosition.orientation = (currentPosition.orientation - degrees) % 360;
+
     return -1 * degrees;
 }
-int turnRightDeg(int degrees, int power) {
+int turnRightDeg(Position &currentPosition, int degrees, int power) {
 
     // Initialize Variables
     nMotorEncoder[motorA] = 0;
@@ -109,6 +117,9 @@ int turnRightDeg(int degrees, int power) {
     motor[motorA] = 0;
     motor[motorB] = 0;
 
+    // Update Orientation
+    currentPosition.orientation = (currentPosition.orientation + degrees) % 360;
+
     return degrees;
 }
 
@@ -121,10 +132,10 @@ void faceNorth(Position &currentPosition, int power){
 
     // Readjust angle to vertical
     if((initialOrientation % 360) < 180){
-        turnLeftDeg((initialOrientation % 360), power);
+        turnLeftDeg(currentPosition, (initialOrientation % 360), power);
     }
     else {
-        turnRightDeg(360 - (initialOrientation % 360), power);
+        turnRightDeg(currentPosition, 360 - (initialOrientation % 360), power);
     }
 
     currentPosition.orientation = 0;
@@ -137,10 +148,10 @@ void faceSouth(Position &currentPosition, int power){
 
     // Readjust angle to vertical
     if((initialOrientation % 360) < 180){
-        turnRightDeg(180 - (initialOrientation % 360), power);
+        turnRightDeg(currentPosition, 180 - (initialOrientation % 360), power);
     }
     else {
-        turnLeftDeg((initialOrientation % 360) - 180, power);
+        turnLeftDeg(currentPosition, (initialOrientation % 360) - 180, power);
     }
 
     currentPosition.orientation = 180;
@@ -153,10 +164,10 @@ void faceEast(Position &currentPosition, int power){
 
     // Readjust angle to vertical
     if((initialOrientation % 360) < 90){
-        turnRightDeg(90 - (initialOrientation % 360), power);
+        turnRightDeg(currentPosition, 90 - (initialOrientation % 360), power);
     }
     else {
-        turnLeftDeg((initialOrientation % 360) - 90, power);
+        turnLeftDeg(currentPosition, (initialOrientation % 360) - 90, power);
     }
 
     currentPosition.orientation = 90;
@@ -169,10 +180,10 @@ void faceWest(Position &currentPosition, int power){
 
     // Readjust angle to vertical
     if((initialOrientation % 360) < 270){
-        turnRightDeg(270 - (initialOrientation % 360), power);
+        turnRightDeg(currentPosition, 270 - (initialOrientation % 360), power);
     }
     else {
-        turnLeftDeg((initialOrientation % 360) - 270, power);
+        turnLeftDeg(currentPosition, (initialOrientation % 360) - 270, power);
     }
 
     currentPosition.orientation = 270;
@@ -184,7 +195,7 @@ void faceWest(Position &currentPosition, int power){
 /*
 Move Vertically To a specific Y coord
 */
-void moveVerticallyTo(int goalYPos, Position &currentPosition, int power){
+void moveVerticallyTo(int goalYPos, Position &currentPosition, int power, int magnetCalibrationValue){
 
     // Initialize Variables
     nMotorEncoder[motorA] = 0;
@@ -195,31 +206,48 @@ void moveVerticallyTo(int goalYPos, Position &currentPosition, int power){
     nxtDisplayCenteredTextLine(6, "MOVE Y: %d cm", distanceMm / 10);
     int tickGoal = (ticksPerMm * distanceMm) / 10;
 
+    int magnetValue = magnetCalibrationValue;
+    int diff = magnetCalibrationValue - magnetValue;
+
     if(currentPosition.y > goalYPos) { // ALV must move down
-        faceSouth(currentPosition, power + 10);
+        faceSouth(currentPosition, turnPower);
         wait10Msec(transitionDelay);
     		// Move
     		nMotorEncoder[motorA] = 0;
     		nMotorEncoder[motorB] = 0;
     		while(abs(nMotorEncoder[motorA]) < tickGoal){
-    		    // TODO: Update to sync motors digitally?
+    			if((abs(diff) > 10)){
+          		motor[motorA] = 0; // Left
+              motor[motorB] = 0; // Right
+              nxtDisplayCenteredTextLine(4, "%s", "MAGNET DETECTED");
+              return;
+           }
      		   motor[motorA] = power; // Left
      		   motor[motorB] = power; // Right
+     		   magnetValue = SensorRaw[S4];
+           diff = magnetCalibrationValue - magnetValue;
    			}
    			currentPosition.y = initialYPos - (distanceMm / 10);
    			displayPosition(currentPosition);
     		nxtDisplayCenteredTextLine(4, "FINAL Y: %d", currentPosition.y);
     }
     else { // ALV must move up
-        faceNorth(currentPosition, power + 10);
+        faceNorth(currentPosition, turnPower);
         wait10Msec(transitionDelay);
     		// Move
     		nMotorEncoder[motorA] = 0;
     		nMotorEncoder[motorB] = 0;
     		while(abs(nMotorEncoder[motorA]) < tickGoal){
-    		    // TODO: Update to sync motors digitally?
+    			if((abs(diff) > 10)){
+          		motor[motorA] = 0; // Left
+              motor[motorB] = 0; // Right
+              nxtDisplayCenteredTextLine(4, "%s", "MAGNET DETECTED");
+              return;
+           }
      		   motor[motorA] = power; // Left
      		   motor[motorB] = power; // Right
+     		   magnetValue = SensorRaw[S4];
+           diff = magnetCalibrationValue - magnetValue;
    			}
     		currentPosition.y = initialYPos + (distanceMm / 10);
    			displayPosition(currentPosition);
@@ -236,7 +264,7 @@ void moveVerticallyTo(int goalYPos, Position &currentPosition, int power){
 /*
 Move Horizontally To a specific X coord
 */
-void moveHorizontallyTo(int goalXPos, Position &currentPosition, int power){
+void moveHorizontallyTo(int goalXPos, Position &currentPosition, int power, int magnetCalibrationValue){
 
     // Initialize Variables
     nMotorEncoder[motorA] = 0;
@@ -247,31 +275,48 @@ void moveHorizontallyTo(int goalXPos, Position &currentPosition, int power){
     nxtDisplayCenteredTextLine(6, "MOVE X: %d cm", distanceMm / 10);
     int tickGoal = (ticksPerMm * distanceMm) / 10;
 
+    int magnetValue = magnetCalibrationValue;
+    int diff = magnetCalibrationValue - magnetValue;
+
     if(currentPosition.x > goalXPos) { // ALV must move west
-        faceWest(currentPosition, power + 10);
+        faceWest(currentPosition, turnPower);
         wait10Msec(transitionDelay);
     		// Move
     		nMotorEncoder[motorA] = 0;
     		nMotorEncoder[motorB] = 0;
     		while(abs(nMotorEncoder[motorA]) < tickGoal){
-    		   // TODO: Update to sync motors digitally?
+    		   if((abs(diff) > 10)){
+          		motor[motorA] = 0; // Left
+              motor[motorB] = 0; // Right
+              nxtDisplayCenteredTextLine(4, "%s", "MAGNET DETECTED");
+              return;
+           }
      		   motor[motorA] = power; // Left
      		   motor[motorB] = power; // Right
+     		   magnetValue = SensorRaw[S4];
+           diff = magnetCalibrationValue - magnetValue;
    			}
     		currentPosition.x = initialXPos - (distanceMm / 10);
    			displayPosition(currentPosition);
     		nxtDisplayCenteredTextLine(4, "FINAL X: %d", currentPosition.y);
     }
     else { // ALV must move east
-        faceEast(currentPosition, power + 10);
+        faceEast(currentPosition, turnPower);
         wait10Msec(transitionDelay);
     		// Move
     		nMotorEncoder[motorA] = 0;
     		nMotorEncoder[motorB] = 0;
     		while(abs(nMotorEncoder[motorA]) < tickGoal){
-    		   // TODO: Update to sync motors digitally?
+    		   if((abs(diff) > 10)){
+          		motor[motorA] = 0; // Left
+              motor[motorB] = 0; // Right
+              nxtDisplayCenteredTextLine(4, "%s", "MAGNET DETECTED");
+              return;
+           }
      		   motor[motorA] = power; // Left
      		   motor[motorB] = power; // Right
+     		   magnetValue = SensorRaw[S4];
+           diff = magnetCalibrationValue - magnetValue;
    			}
     		currentPosition.x = initialXPos + (distanceMm / 10);
    			displayPosition(currentPosition);
@@ -307,5 +352,6 @@ void dropOffBin() {
 
     // Stop Motors
     motor[motorC] = 0;
+
     return;
 }
